@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Blog Post — Sqft an Yards</title>
+  <meta name="description" content="Real estate article from Sqft an Yards — The Property People, South Delhi." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .post-layout { display:grid; grid-template-columns:1fr 320px; gap:50px; align-items:start; padding:60px 0 80px; }
+    .post-hero-img { width:100%; height:420px; object-fit:cover; border-radius:var(--radius-lg); margin-bottom:36px; }
+    .post-meta { display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-bottom:24px; }
+    .post-meta span { font-size:0.84rem; color:var(--gray-400); display:flex; align-items:center; gap:5px; }
+    .post-content { line-height:1.85; color:var(--text-mid); font-size:1rem; }
+    .post-content p { margin-bottom:18px; }
+    .post-content strong, .post-content b { color:var(--text-dark); font-weight:700; }
+    .post-content h2 { font-family:var(--font-display); font-size:1.5rem; color:var(--navy); margin:32px 0 14px; }
+    .post-content h3 { font-family:var(--font-display); font-size:1.2rem; color:var(--navy); margin:24px 0 10px; }
+    .post-content ul, .post-content ol { padding-left:24px; margin-bottom:16px; }
+    .post-content li { margin-bottom:8px; }
+    .post-content blockquote { border-left:4px solid var(--gold); background:rgba(201,168,76,0.06); padding:16px 20px; border-radius:0 var(--radius-sm) var(--radius-sm) 0; margin:20px 0; font-style:italic; }
+    .sidebar-card { background:var(--white); border-radius:var(--radius-lg); padding:24px; box-shadow:var(--shadow-md); margin-bottom:24px; }
+    .sidebar-card h4 { margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--gray-100); }
+    .recent-post { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--gray-100); cursor:pointer; transition:var(--transition); }
+    .recent-post:last-child { border-bottom:none; }
+    .recent-post:hover .recent-post-title { color:var(--gold); }
+    .recent-post-img { width:64px; height:50px; border-radius:var(--radius-sm); object-fit:cover; flex-shrink:0; }
+    .recent-post-title { font-size:0.82rem; font-weight:600; color:var(--text-dark); line-height:1.4; }
+    .recent-post-cat { font-size:0.72rem; color:var(--gold); margin-bottom:4px; font-weight:700; }
+    .share-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:32px; padding-top:28px; border-top:2px solid var(--gray-100); }
+    .post-author-card { display:flex; gap:16px; align-items:center; background:var(--gray-100); border-radius:var(--radius-md); padding:20px; margin-top:36px; }
+    .author-avatar-lg { width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-light)); display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:700; color:var(--navy); flex-shrink:0; }
+    @media(max-width:1024px){ .post-layout { grid-template-columns:1fr; } }
+    @media(max-width:768px){ .post-hero-img { height:260px; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar light-nav" id="mainNav">
+  <div class="navbar-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🏛️</div>
+      <div class="nav-logo-text">
+        <div class="brand">Sqft an Yards</div>
+        <div class="tagline">The Property People</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="properties.html">Properties</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="tel:+917065977751" class="btn btn-outline-gold" style="padding:10px 20px;font-size:0.85rem;">📞 +91-70-659-77751</a>
+    </div>
+    <div class="hamburger" id="ham"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<nav class="nav-mobile" id="mobNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="properties.html">🏢 Properties</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="index.html#contact">📞 Contact</a>
+</nav>
+
+<div id="postContent">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <p>Loading article...</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:24px 0;">
+      <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--white);">Sqft an Yards<span style="color:var(--gold);font-size:0.75rem;font-family:var(--font-body);letter-spacing:2px;"> THE PROPERTY PEOPLE</span></div>
+      <a href="tel:+917065977751" style="color:var(--gold);font-weight:700;">+91-70-659-77751</a>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Sqft an Yards. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  initData();
+  initNav();
+  initReveal();
+
+  const params = new URLSearchParams(window.location.search);
+  const blogId = params.get('id');
+
+  function parseContent(raw) {
+    if (!raw) return '';
+    // Process markdown-like formatting
+    let html = raw
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    const lines = html.split('\n');
+    let result = '';
+    let inList = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) {
+        if (inList) { result += '</ul>'; inList = false; }
+        result += '';
+        continue;
+      }
+      if (line.startsWith('# ')) { result += `<h2>${line.slice(2)}</h2>`; continue; }
+      if (line.startsWith('## ')) { result += `<h2>${line.slice(3)}</h2>`; continue; }
+      if (line.startsWith('### ')) { result += `<h3>${line.slice(4)}</h3>`; continue; }
+      if (line.match(/^\d+\.\s/)) {
+        if (!inList) { result += '<ol>'; inList = true; }
+        result += `<li>${line.replace(/^\d+\.\s/, '')}</li>`;
+        continue;
+      }
+      if (line.startsWith('- ') || line.startsWith('• ')) {
+        if (!inList) { result += '<ul>'; inList = true; }
+        result += `<li>${line.slice(2)}</li>`;
+        continue;
+      }
+      if (inList) { result += '</ol>'; inList = false; }
+      result += `<p>${line}</p>`;
+    }
+    if (inList) result += '</ul>';
+    return result;
+  }
+
+  function renderPost() {
+    const blogs = getBlogs();
+    const post = blogs.find(b => b.id === blogId);
+    if (!post) {
+      document.getElementById('postContent').innerHTML = `
+        <div style="text-align:center;padding:120px 20px;">
+          <div style="font-size:3rem;margin-bottom:16px;">📭</div>
+          <h2>Article Not Found</h2>
+          <p style="margin:12px 0 24px;">This article may have been removed.</p>
+          <a href="blog.html" class="btn btn-gold">Back to Blog</a>
+        </div>`;
+      return;
+    }
+    document.getElementById('pageTitle').textContent = post.title + ' — Sqft an Yards';
+    const others = blogs.filter(b => b.id !== post.id).slice(0, 4);
+    const authorInitials = post.author.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+    document.getElementById('postContent').innerHTML = `
+      <div class="page-hero" style="padding:100px 0 50px;">
+        <div class="container">
+          <div class="breadcrumb">
+            <a href="index.html">Home</a><span>/</span>
+            <a href="blog.html">Blog</a><span>/</span>
+            <span style="color:rgba(255,255,255,0.7);">${post.category}</span>
+          </div>
+          <div style="margin-bottom:14px;"><span class="badge badge-gold">${post.category}</span></div>
+          <h1 style="text-align:left;max-width:800px;">${post.title}</h1>
+        </div>
+      </div>
+      <div class="container">
+        <div class="post-layout">
+          <article>
+            <img src="${post.image}" alt="${post.title}" class="post-hero-img" />
+            <div class="post-meta">
+              <span>✍️ ${post.author}</span>
+              <span>📅 ${formatDate(post.date)}</span>
+              <span>🕐 ${post.readTime || '5 min read'}</span>
+            </div>
+            <div class="post-content">${parseContent(post.content)}</div>
+            <div class="post-author-card">
+              <div class="author-avatar-lg">${authorInitials}</div>
+              <div>
+                <div style="font-weight:700;color:var(--text-dark);margin-bottom:4px;">${post.author}</div>
+                <div style="font-size:0.82rem;color:var(--gray-400);">Real Estate Advisor, Sqft an Yards</div>
+                <div style="font-size:0.82rem;color:var(--gold);margin-top:4px;">📞 +91-70-659-77751</div>
+              </div>
+            </div>
+            <div class="share-row">
+              <span style="font-weight:700;color:var(--text-dark);align-self:center;">Share:</span>
+              <button onclick="shareWA()" class="btn" style="background:#25D366;color:white;padding:10px 20px;font-size:0.85rem;">💬 WhatsApp</button>
+              <button onclick="copyLink()" class="btn btn-navy" style="padding:10px 20px;font-size:0.85rem;">🔗 Copy Link</button>
+            </div>
+          </article>
+
+          <aside>
+            <div class="sidebar-card">
+              <h4>🏠 Looking for Property?</h4>
+              <p style="font-size:0.88rem;color:var(--text-mid);margin-bottom:16px;">Talk to our South Delhi specialists today</p>
+              <a href="tel:+917065977751" class="btn btn-gold" style="width:100%;justify-content:center;margin-bottom:10px;">📞 Call Now</a>
+              <a href="properties.html" class="btn btn-navy" style="width:100%;justify-content:center;">Browse Listings</a>
+            </div>
+            <div class="sidebar-card">
+              <h4>📰 More Articles</h4>
+              ${others.map(b => `
+                <div class="recent-post" onclick="window.location='blog-post.html?id=${b.id}'">
+                  <img src="${b.image}" alt="${b.title}" class="recent-post-img" loading="lazy" />
+                  <div><div class="recent-post-cat">${b.category}</div><div class="recent-post-title">${b.title}</div></div>
+                </div>`).join('')}
+              <a href="blog.html" style="display:block;text-align:center;margin-top:16px;color:var(--gold);font-size:0.85rem;font-weight:600;">View All Articles →</a>
+            </div>
+            <div class="sidebar-card" style="background:linear-gradient(135deg,var(--navy),var(--navy-mid));border:none;">
+              <h4 style="color:var(--white);">💬 Contact Us</h4>
+              <p style="color:rgba(255,255,255,0.65);font-size:0.85rem;margin-bottom:16px;">Get a free property consultation</p>
+              <div style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:12px;">+91-70-659-77751</div>
+              <a href="https://wa.me/917065977751" target="_blank" class="btn btn-gold" style="width:100%;justify-content:center;">WhatsApp Us</a>
+            </div>
+          </aside>
+        </div>
+      </div>`;
+    initReveal();
+  }
+
+  function shareWA() {
+    const url = window.location.href;
+    window.open('https://wa.me/?text=' + encodeURIComponent('Worth reading: ' + document.getElementById('pageTitle').textContent + ' ' + url), '_blank');
+  }
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('🔗 Link copied!');
+  }
+
+  renderPost();
+</script>
+</body>
+</html>

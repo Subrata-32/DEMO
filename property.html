@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Property Detail — Sqft an Yards</title>
+  <meta name="description" content="View property details, photos, amenities and contact our team at Sqft an Yards." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .prop-main { padding: 50px 0 80px; }
+    .amenities-section h3, .desc-section h3 { margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--gray-100); }
+    .map-placeholder { width:100%; height:220px; background:linear-gradient(135deg,var(--navy),var(--navy-mid)); border-radius:var(--radius-md); display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(255,255,255,0.6);font-size:0.9rem; margin-top:16px; }
+    .similar-section { background:var(--gray-100); padding:60px 0; }
+    .contact-card-section { margin-top:20px; }
+    .agent-card { border:1px solid var(--gray-200); border-radius:var(--radius-md); padding:20px; margin-bottom:16px; display:flex;align-items:center;gap:14px; }
+    .agent-avatar { width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-size:1rem;flex-shrink:0; }
+    .agent-info .name { font-weight:700;color:var(--text-dark);margin-bottom:2px; }
+    .agent-info .role { font-size:0.78rem;color:var(--gray-400); }
+    .contact-input { width:100%;padding:11px 14px;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:0.88rem;margin-bottom:10px;outline:none;transition:var(--transition); }
+    .contact-input:focus { border-color:var(--gold); }
+    .share-btns { display:flex;gap:8px;flex-wrap:wrap;margin-top:16px; }
+    .share-btn { padding:8px 16px;border-radius:50px;font-size:0.78rem;font-weight:600;cursor:pointer;border:none;transition:var(--transition); }
+    .gallery-count { position:absolute;bottom:14px;right:14px;background:rgba(0,0,0,0.65);color:white;padding:5px 12px;border-radius:50px;font-size:0.78rem;backdrop-filter:blur(8px); }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar light-nav" id="mainNav">
+  <div class="navbar-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🏛️</div>
+      <div class="nav-logo-text">
+        <div class="brand">Sqft an Yards</div>
+        <div class="tagline">The Property People</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="properties.html" class="active">Properties</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="tel:+917065977751" class="btn btn-outline-gold" style="padding:10px 20px;font-size:0.85rem;">📞 +91-70-659-77751</a>
+    </div>
+    <div class="hamburger" id="ham"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<nav class="nav-mobile" id="mobNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="properties.html">🏢 Properties</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="index.html#contact">📞 Contact</a>
+</nav>
+
+<div id="propContent">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+    <div style="text-align:center;padding:40px;"><div style="font-size:2rem;margin-bottom:12px;">🔍</div><p>Loading property...</p></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="Property Photo" onclick="event.stopPropagation()" />
+</div>
+
+<!-- FOOTER -->
+<footer class="footer" style="margin-top:0;">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:24px 0;">
+      <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--white);">Sqft an Yards <span style="color:var(--gold);font-size:0.75rem;font-family:var(--font-body);letter-spacing:2px;"> THE PROPERTY PEOPLE</span></div>
+      <a href="tel:+917065977751" style="color:var(--gold);font-weight:700;">+91-70-659-77751</a>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Sqft an Yards. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  initData();
+  initNav();
+
+  const params = new URLSearchParams(window.location.search);
+  const propId = params.get('id');
+
+  function openLightbox(src) {
+    document.getElementById('lightboxImg').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function renderProperty() {
+    const props = getProperties();
+    const p = props.find(x => x.id === propId);
+    if (!p) {
+      document.getElementById('propContent').innerHTML = `
+        <div style="text-align:center;padding:120px 20px;">
+          <div style="font-size:3rem;margin-bottom:16px;">🏚️</div>
+          <h2>Property Not Found</h2>
+          <p style="margin:12px 0 24px;">This property may have been removed.</p>
+          <a href="properties.html" class="btn btn-gold">Browse All Properties</a>
+        </div>`;
+      return;
+    }
+
+    document.getElementById('pageTitle').textContent = p.title + ' — Sqft an Yards';
+    const imgs = p.images && p.images.length ? p.images : ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80'];
+
+    const galleryHTML = `
+      <div style="position:relative;">
+        <div class="prop-gallery">
+          ${imgs.slice(0,4).map((img,i) => `<img src="${img}" alt="${p.title} photo ${i+1}" onclick="openLightbox('${img}')" />`).join('')}
+        </div>
+        <span class="gallery-count">📷 ${imgs.length} Photos</span>
+      </div>`;
+
+    const statusClass = p.status === 'For Rent' ? 'badge-green' : 'badge-navy';
+    const amenitiesHTML = p.amenities && p.amenities.length ?
+      `<div class="amenities-grid">${p.amenities.map(a => `<div class="amenity-item">${a}</div>`).join('')}</div>` : '';
+
+    document.getElementById('propContent').innerHTML = `
+      <div class="page-hero" style="padding:100px 0 50px;">
+        <div class="container">
+          <div class="breadcrumb">
+            <a href="index.html">Home</a><span>/</span>
+            <a href="properties.html">Properties</a><span>/</span>
+            <span style="color:rgba(255,255,255,0.7)">${p.title}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+            <span class="badge ${statusClass}">${p.status}</span>
+            <span class="badge badge-gold">${p.type}</span>
+            ${p.featured ? '<span class="badge" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);color:white;">★ Featured</span>' : ''}
+          </div>
+          <h1 style="text-align:left;margin-bottom:8px;">${p.title}</h1>
+          <div style="color:rgba(255,255,255,0.65);display:flex;align-items:center;gap:6px;">📍 ${p.location}</div>
+        </div>
+      </div>
+      <div class="prop-main">
+        <div class="container">
+          ${galleryHTML}
+          <div class="prop-detail-grid" style="margin-top:36px;">
+            <div>
+              <!-- SPECS -->
+              <div class="prop-specs">
+                ${p.bedrooms ? `<div class="prop-spec"><div class="val">${p.bedrooms}</div><div class="key">🛏 Bedrooms</div></div>` : ''}
+                ${p.bathrooms ? `<div class="prop-spec"><div class="val">${p.bathrooms}</div><div class="key">🚿 Bathrooms</div></div>` : ''}
+                <div class="prop-spec"><div class="val">${p.area}</div><div class="key">📐 Sq.Ft.</div></div>
+                ${p.floor ? `<div class="prop-spec"><div class="val" style="font-size:1rem;">${p.floor}</div><div class="key">🏢 Floor</div></div>` : ''}
+                ${p.facing ? `<div class="prop-spec"><div class="val" style="font-size:1rem;">${p.facing}</div><div class="key">🧭 Facing</div></div>` : ''}
+                ${p.age ? `<div class="prop-spec"><div class="val" style="font-size:1rem;">${p.age}</div><div class="key">📅 Age</div></div>` : ''}
+              </div>
+
+              <!-- DESCRIPTION -->
+              <div class="desc-section" style="margin-top:32px;">
+                <h3>About This Property</h3>
+                <p style="line-height:1.8;color:var(--text-mid);">${p.description}</p>
+              </div>
+
+              <!-- AMENITIES -->
+              ${amenitiesHTML ? `<div class="amenities-section" style="margin-top:32px;"><h3>Amenities & Features</h3>${amenitiesHTML}</div>` : ''}
+
+              <!-- LOCATION -->
+              <div style="margin-top:32px;">
+                <h3 style="margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--gray-100);">📍 Location</h3>
+                <p style="color:var(--text-mid);margin-bottom:8px;">${p.location}, South Delhi, Delhi</p>
+                <div class="map-placeholder">
+                  <span style="font-size:2rem;">🗺️</span>
+                  <span>${p.location}, South Delhi</span>
+                  <span style="font-size:0.78rem;opacity:0.6;">Map view available via Google Maps</span>
+                </div>
+              </div>
+
+              <!-- SHARE -->
+              <div style="margin-top:28px;">
+                <h4 style="margin-bottom:12px;color:var(--text-dark);">Share This Property</h4>
+                <div class="share-btns">
+                  <button class="share-btn" style="background:#25D366;color:white;" onclick="shareWA()">💬 WhatsApp</button>
+                  <button class="share-btn" style="background:var(--navy);color:white;" onclick="copyLink()">🔗 Copy Link</button>
+                  <button class="share-btn" style="background:#1877F2;color:white;">f Facebook</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <div class="prop-detail-card">
+              <div class="prop-detail-price">${p.priceLabel || formatPrice(p.price)}<span style="font-size:0.9rem;color:var(--gray-400);font-weight:400;font-family:var(--font-body);">${p.status === 'For Rent' ? '/month' : ''}</span></div>
+              <div style="font-size:0.82rem;color:var(--gray-400);margin-bottom:20px;">📐 ₹${Math.round(p.price/p.area).toLocaleString('en-IN')}/sqft</div>
+
+              <div class="agent-card">
+                <div class="agent-avatar">SK</div>
+                <div class="agent-info">
+                  <div class="name">Sandeep Kumar</div>
+                  <div class="role">Senior Property Advisor</div>
+                  <div style="font-size:0.8rem;color:var(--gold);margin-top:4px;">📞 +91-70-659-77751</div>
+                </div>
+              </div>
+
+              <form onsubmit="submitEnquiry(event)">
+                <input class="contact-input" placeholder="Your Name" type="text" required />
+                <input class="contact-input" placeholder="Phone Number" type="tel" required />
+                <input class="contact-input" placeholder="Email Address" type="email" />
+                <textarea class="contact-input" rows="3" placeholder="I'm interested in ${p.title}. Please contact me."></textarea>
+                <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;font-size:0.95rem;">📩 Send Enquiry</button>
+              </form>
+
+              <a href="tel:+917065977751" class="btn btn-navy" style="width:100%;justify-content:center;margin-top:10px;">📞 Call +91-70-659-77751</a>
+              <a href="https://wa.me/917065977751?text=Hi, I'm interested in ${encodeURIComponent(p.title)} in ${encodeURIComponent(p.location)}" target="_blank" class="btn" style="width:100%;justify-content:center;margin-top:10px;background:#25D366;color:white;">💬 WhatsApp Us</a>
+
+              <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--gray-100);">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                  <div style="text-align:center;padding:12px;background:var(--gray-100);border-radius:var(--radius-sm);">
+                    <div style="font-size:0.75rem;color:var(--gray-400);margin-bottom:4px;">STATUS</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--navy);">${p.status}</div>
+                  </div>
+                  <div style="text-align:center;padding:12px;background:var(--gray-100);border-radius:var(--radius-sm);">
+                    <div style="font-size:0.75rem;color:var(--gray-400);margin-bottom:4px;">TYPE</div>
+                    <div style="font-weight:700;font-size:0.88rem;color:var(--navy);">${p.type}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+    initReveal();
+  }
+
+  function submitEnquiry(e) {
+    e.preventDefault();
+    showToast('✅ Enquiry sent! Our advisor will contact you shortly.');
+    e.target.reset();
+  }
+
+  function shareWA() {
+    const url = window.location.href;
+    const p = getProperties().find(x => x.id === propId);
+    const msg = `Check out this property: ${p ? p.title : ''} - ${url}`;
+    window.open('https://wa.me/917065977751?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href);
+    showToast('🔗 Link copied to clipboard!');
+  }
+
+  renderProperty();
+
+  // Similar properties
+  setTimeout(() => {
+    const p = getProperties().find(x => x.id === propId);
+    if (!p) return;
+    const similar = getProperties().filter(x => x.id !== propId && (x.type === p.type || x.location.includes(p.location.split(',')[0]))).slice(0,3);
+    if (!similar.length) return;
+    const section = document.createElement('section');
+    section.className = 'similar-section';
+    section.innerHTML = `<div class="container"><div class="section-head reveal"><div class="section-label">✦ Similar Properties</div><h2>You Might Also Like</h2></div><div class="props-grid reveal">${similar.map(s => {
+      const img = s.images && s.images[0] ? s.images[0] : 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80';
+      return `<div class="prop-card" onclick="window.location='property.html?id=${s.id}'"><div class="prop-card-img"><img src="${img}" alt="${s.title}" loading="lazy"/><div class="prop-card-badges"><span class="badge badge-navy">${s.status}</span></div></div><div class="prop-card-body"><div class="prop-card-price">${s.priceLabel||formatPrice(s.price)}</div><div class="prop-card-title">${s.title}</div><div class="prop-card-location">📍 ${s.location}</div><div class="prop-card-meta">${s.bedrooms?`<div class="prop-meta-item">🛏️ <span>${s.bedrooms}</span> Beds</div>`:''}<div class="prop-meta-item">📐 <span>${s.area}</span> sqft</div></div></div></div>`;
+    }).join('')}</div></div>`;
+    const footer = document.querySelector('footer');
+    document.body.insertBefore(section, footer);
+    initReveal();
+  }, 200);
+</script>
+</body>
+</html>

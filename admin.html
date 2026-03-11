@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Sqft an Yards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --navy: #0A1628;
+      --navy-mid: #122040;
+      --navy-light: #1E3260;
+      --white: #FFFFFF;
+      --bg: #F0EEE9;
+      --card: #FFFFFF;
+      --border: #E5E0D8;
+      --text: #1A1612;
+      --text-mid: #4A443E;
+      --text-muted: #9B9380;
+      --sidebar-w: 256px;
+      --shadow: 0 2px 12px rgba(10,22,40,0.08);
+      --shadow-md: 0 4px 24px rgba(10,22,40,0.12);
+      --radius: 10px;
+      --transition: 0.2s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-decoration: none;
+    }
+    .sidebar-logo-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .sidebar-logo-text .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--white);
+      line-height: 1.2;
+    }
+    .sidebar-logo-text .sub {
+      font-size: 0.65rem;
+      color: var(--gold);
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .sidebar-section {
+      padding: 20px 12px 6px;
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.28);
+    }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      margin: 1px 10px;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.62);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      background: transparent;
+      width: calc(100% - 20px);
+      text-align: left;
+      text-decoration: none;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .nav-btn.active { background: rgba(201,168,76,0.14); color: var(--gold); }
+    .nav-btn .ico { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-footer .label { font-size: 0.75rem; color: rgba(255,255,255,0.4); font-weight: 500; }
+    .sidebar-footer .phone { font-size: 0.7rem; color: rgba(255,255,255,0.22); margin-top: 3px; }
+
+    /* ── MAIN AREA ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      padding: 28px 32px 60px;
+    }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .topbar h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      font-family: 'Playfair Display', serif;
+    }
+    .topbar-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* ── PANELS ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── WELCOME BANNER ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6e 100%);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .welcome-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--white);
+      margin-bottom: 6px;
+      font-weight: 700;
+    }
+    .welcome-banner p {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+      max-width: 400px;
+    }
+    .welcome-badge {
+      background: rgba(201,168,76,0.18);
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold-light);
+      padding: 8px 18px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* ── STAT CARDS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-left: 4px solid transparent;
+    }
+    .stat-card.gold { border-left-color: var(--gold); }
+    .stat-card.green { border-left-color: #1a7a4a; }
+    .stat-card.blue { border-left-color: #2980b9; }
+    .stat-card.purple { border-left-color: #8B5CF6; }
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .stat-card.gold .stat-icon { background: rgba(201,168,76,0.12); }
+    .stat-card.green .stat-icon { background: rgba(26,122,74,0.1); }
+    .stat-card.blue .stat-icon { background: rgba(41,128,185,0.1); }
+    .stat-card.purple .stat-icon { background: rgba(139,92,246,0.1); }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1;
+    }
+    .stat-lbl { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── TABLE CARD ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .card-header h3 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px; }
+    .card-body-np { padding: 0; }
+
+    /* ── TABLE ── */
+    .tbl { width: 100%; border-collapse: collapse; }
+    .tbl th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: #F7F5F0;
+    }
+    .tbl td {
+      padding: 13px 16px;
+      font-size: 0.86rem;
+      border-bottom: 1px solid #F0EDE6;
+      vertical-align: middle;
+      color: var(--text-mid);
+    }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl tr:hover td { background: rgba(201,168,76,0.03); }
+    .tbl-img { width: 52px; height: 40px; border-radius: 6px; object-fit: cover; }
+    .tbl-title { font-weight: 600; color: var(--text); max-width: 200px; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 22px; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; border: none; transition: var(--transition); text-decoration: none;
+    }
+    .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: var(--gold); border: 1.5px solid var(--gold); }
+    .btn-outline:hover { background: var(--gold); color: var(--navy); }
+    .btn-navy { background: var(--navy); color: var(--white); }
+    .btn-navy:hover { background: var(--navy-mid); }
+    .btn-sm { padding: 6px 12px; font-size: 0.78rem; border-radius: 6px; }
+    .btn-danger { background: rgba(192,57,43,0.1); color: #c0392b; }
+    .btn-danger:hover { background: #c0392b; color: white; }
+    .btn-edit { background: rgba(201,168,76,0.1); color: #b8880a; }
+    .btn-edit:hover { background: var(--gold); color: var(--navy); }
+    .actions-cell { display: flex; gap: 6px; padding: 13px 16px; }
+
+    /* ── FORM ── */
+    .form-section { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; margin-bottom: 24px; }
+    .form-section-title { font-size: 1rem; font-weight: 700; color: var(--text); margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1.5px solid var(--border); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-muted); }
+    .form-control {
+      padding: 11px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: var(--transition);
+      background: var(--white);
+      width: 100%;
+    }
+    .form-control:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.12); }
+    textarea.form-control { resize: vertical; min-height: 110px; }
+    .form-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 50px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .badge-gold { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--navy); }
+    .badge-green { background: #d4edda; color: #155724; }
+    .badge-blue { background: #d1ecf1; color: #0c5460; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+    .dot-green { background: #1a7a4a; }
+    .dot-blue { background: #2980b9; }
+
+    /* ── IMG PREVIEW ── */
+    .img-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .img-preview-item { position: relative; width: 80px; height: 60px; border-radius: 6px; overflow: hidden; box-shadow: var(--shadow); }
+    .img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .img-preview-cover { position: absolute; bottom: 2px; left: 2px; background: var(--gold); color: var(--navy); font-size: 0.55rem; font-weight: 700; padding: 1px 5px; border-radius: 3px; letter-spacing: 0.5px; }
+
+    /* ── SEARCH BAR ── */
+    .search-inp {
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      outline: none;
+      background: var(--white);
+      transition: var(--transition);
+      width: 220px;
+    }
+    .search-inp:focus { border-color: var(--gold); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+      background: var(--navy); color: var(--white);
+      padding: 14px 20px; border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      font-size: 0.88rem; font-weight: 500;
+      border-left: 4px solid var(--gold);
+      transform: translateX(130%);
+      transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .toast.show { transform: translateX(0); }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .empty-state h4 { font-size: 1rem; margin-bottom: 6px; color: var(--text-mid); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(10,22,40,0.7); backdrop-filter: blur(6px);
+      z-index: 9000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--card); border-radius: 14px; width: 520px;
+      max-width: 95vw; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.2s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(20px); opacity:0;} to { transform:translateY(0); opacity:1;} }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .modal-header h3 { font-size: 1rem; font-weight: 700; color: var(--text); }
+    .modal-close { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--text-muted); padding: 4px 8px; border-radius: 6px; }
+    .modal-close:hover { background: var(--bg); color: var(--text); }
+    .modal-img-preview { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .modal-img-thumb { width: 76px; height: 58px; border-radius: 6px; object-fit: cover; border: 2px solid var(--border); }
+    .modal-img-thumb.cover { border-color: var(--gold); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); transition: 0.3s ease; }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding: 16px; }
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .actions-cell { flex-direction: column; padding: 8px 16px; }
+    }
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="sidebar-logo-icon">🏛️</div>
+    <div class="sidebar-logo-text">
+      <div class="name">Sqft an Yards</div>
+      <div class="sub">Admin</div>
+    </div>
+  </a>
+  <div class="sidebar-section">Main</div>
+  <button class="nav-btn active" id="nav-dashboard" onclick="go('dashboard')"><span class="ico">📊</span> Dashboard</button>
+
+  <div class="sidebar-section">Properties</div>
+  <button class="nav-btn" id="nav-addProp" onclick="go('addProp')"><span class="ico">➕</span> Add Property</button>
+  <button class="nav-btn" id="nav-manageProps" onclick="go('manageProps')"><span class="ico">🏢</span> Manage Properties</button>
+
+  <div class="sidebar-section">Blog</div>
+  <button class="nav-btn" id="nav-addBlog" onclick="go('addBlog')"><span class="ico">✏️</span> Write Blog Post</button>
+  <button class="nav-btn" id="nav-manageBlogs" onclick="go('manageBlogs')"><span class="ico">📰</span> Manage Blog Posts</button>
+
+  <div class="sidebar-section">Site</div>
+  <a class="nav-btn" href="index.html" target="_blank"><span class="ico">🌐</span> View Website</a>
+  <a class="nav-btn" href="properties.html" target="_blank"><span class="ico">👁️</span> View Listings</a>
+
+  <div class="sidebar-footer">
+    <div class="label">Sqft an Yards — Admin</div>
+    <div class="phone">+91-70-659-77751</div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- ──── DASHBOARD ──── -->
+  <div class="panel active" id="panel-dashboard">
+    <div class="topbar">
+      <h2>📊 Dashboard</h2>
+      <div class="topbar-actions">
+        <button class="btn btn-gold btn-sm" onclick="go('addProp')">+ Add Property</button>
+        <button class="btn btn-navy btn-sm" onclick="go('addBlog')">+ New Blog Post</button>
+      </div>
+    </div>
+
+    <div class="welcome-banner">
+      <div>
+        <h2>Welcome back, Admin 👋</h2>
+        <p>Manage your property listings, blog posts, and monitor your site from here.</p>
+      </div>
+      <span class="welcome-badge">🏆 Sqft an Yards HQ</span>
+    </div>
+
+    <div class="stats-row" id="dashStats"><!-- JS --></div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3>Recent Properties</h3>
+        <button class="btn btn-outline btn-sm" onclick="go('manageProps')">View All →</button>
+      </div>
+      <div class="card-body-np">
+        <table class="tbl"><thead><tr><th>Photo</th><th>Title</th><th>Location</th><th>Price</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="recentTbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ──── ADD PROPERTY ──── -->
+  <div class="panel" id="panel-addProp">
+    <div class="topbar">
+      <h2>➕ Add New Property</h2>
+      <a class="btn btn-outline btn-sm" href="properties.html" target="_blank">View Listings ↗</a>
+    </div>
+    <form id="addPropForm">
+      <div class="form-section">
+        <div class="form-section-title">📋 Basic Information</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Property Title *</label>
+            <input type="text" id="pTitle" class="form-control" placeholder="e.g. Luxurious 3 BHK Apartment in Greater Kailash II" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" id="pLocation" class="form-control" placeholder="e.g. Greater Kailash II, South Delhi" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Property Type *</label>
+            <select id="pType" class="form-control">
+              <option>Apartment</option><option>Villa</option><option>Builder Floor</option><option>Commercial</option><option>Plot</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Listing Status *</label>
+            <select id="pStatus" class="form-control">
+              <option>For Sale</option><option>For Rent</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Featured on Homepage?</label>
+            <select id="pFeatured" class="form-control">
+              <option value="true">Yes — Show on Homepage</option>
+              <option value="false">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">💰 Price & Details</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Price (₹) *</label>
+            <input type="number" id="pPrice" class="form-control" placeholder="e.g. 4500000" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Price Label (displayed)</label>
+            <input type="text" id="pPriceLabel" class="form-control" placeholder="e.g. ₹45 Lakh (auto-generated if blank)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bedrooms</label>
+            <input type="number" id="pBeds" class="form-control" placeholder="e.g. 3" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bathrooms</label>
+            <input type="number" id="pBaths" class="form-control" placeholder="e.g. 2" min="0" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Area (sq.ft.) *</label>
+            <input type="number" id="pArea" class="form-control" placeholder="e.g. 1850" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Floor</label>
+            <input type="text" id="pFloor" class="form-control" placeholder="e.g. 5th Floor, G+1, Top Floor" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Facing Direction</label>
+            <input type="text" id="pFacing" class="form-control" placeholder="e.g. East, North-East, South" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Age of Property</label>
+            <input type="text" id="pAge" class="form-control" placeholder="e.g. New, 3 Years, 8 Years" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">📝 Description & Amenities</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Property Description *</label>
+            <textarea id="pDesc" class="form-control" rows="5" placeholder="Describe the property — location highlights, interiors, unique features, connectivity..." required></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Amenities (comma separated)</label>
+            <input type="text" id="pAmenities" class="form-control" placeholder="Swimming Pool, Gym, 24/7 Security, Power Backup, Car Parking, Modular Kitchen" />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">🖼️ Property Images</div>
+        <div class="form-group">
+          <label class="form-label">Image URLs (one per line)</label>
+          <textarea id="pImages" class="form-control" rows="4" placeholder="https://images.unsplash.com/photo-xxx&#10;https://images.unsplash.com/photo-yyy"></textarea>
+          <div class="form-hint">💡 Paste direct image URLs (Unsplash, etc.). The first URL will be the cover photo.</div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="previewImgs()" style="margin-top:12px;">🔍 Preview Images</button>
+        <div class="img-previews" id="imgPreviews"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold">✅ Publish Property</button>
+        <button type="button" class="btn btn-navy" onclick="document.getElementById('addPropForm').reset();document.getElementById('imgPreviews').innerHTML=''">Clear Form</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ──── MANAGE PROPERTIES ──── -->
+  <div class="panel" id="panel-manageProps">
+    <div class="topbar">
+      <h2>🏢 Manage Properties</h2>
+      <div class="topbar-actions">
+        <input type="text" class="search-inp" id="searchProps" placeholder="🔍 Search..." oninput="renderManage()" />
+        <button class="btn btn-gold btn-sm" onclick="go('addProp')">+ Add New</button>
+      </div>
+    </div>
+    <div class="card card-body-np">
+      <table class="tbl"><thead><tr><th>Photo</th><th>Title</th><th>Location</th><th>Price</th><th>Type</th><th>Status</th><th>Featured</th><th>Actions</th></tr></thead>
+      <tbody id="manageTbody"></tbody></table>
+    </div>
+  </div>
+
+  <!-- ──── ADD BLOG ──── -->
+  <div class="panel" id="panel-addBlog">
+    <div class="topbar">
+      <h2>✏️ Write Blog Post</h2>
+      <a class="btn btn-outline btn-sm" href="blog.html" target="_blank">View Blog ↗</a>
+    </div>
+    <form id="addBlogForm">
+      <div class="form-section">
+        <div class="form-section-title">📰 Post Details</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Post Title *</label>
+            <input type="text" id="bTitle" class="form-control" placeholder="e.g. Top 5 Reasons to Invest in South Delhi in 2025" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category *</label>
+            <select id="bCategory" class="form-control">
+              <option>Market Trends</option><option>Buying Guide</option><option>NRI Corner</option>
+              <option>Home &amp; Design</option><option>Legal Tips</option><option>Investment</option><option>News</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Author Name *</label>
+            <input type="text" id="bAuthor" class="form-control" placeholder="e.g. Rahul Sharma" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Read Time</label>
+            <input type="text" id="bReadTime" class="form-control" placeholder="e.g. 5 min read" />
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Featured Image URL *</label>
+            <input type="text" id="bImage" class="form-control" placeholder="https://images.unsplash.com/photo-..." required />
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Short Excerpt (shown in blog listing)</label>
+            <textarea id="bExcerpt" class="form-control" rows="2" placeholder="A brief 1–2 sentence summary of the article..."></textarea>
+          </div>
+          <div class="form-group full">
+            <label class="form-label">Article Content *</label>
+            <textarea id="bContent" class="form-control" style="min-height:340px;font-family:monospace;font-size:0.85rem;" placeholder="Write your full article here.&#10;&#10;Use **bold** for emphasis.&#10;Use 1. 2. 3. or - for lists.&#10;Use ## for headings." required></textarea>
+            <div class="form-hint">💡 Use **text** for bold, ## for headings, - for bullet points, 1. for numbered lists.</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-gold">📢 Publish Post</button>
+        <button type="button" class="btn btn-navy" onclick="document.getElementById('addBlogForm').reset()">Clear</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ──── MANAGE BLOGS ──── -->
+  <div class="panel" id="panel-manageBlogs">
+    <div class="topbar">
+      <h2>📰 Manage Blog Posts</h2>
+      <button class="btn btn-gold btn-sm" onclick="go('addBlog')">+ New Post</button>
+    </div>
+    <div class="card card-body-np">
+      <table class="tbl"><thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Author</th><th>Date</th><th>Actions</th></tr></thead>
+      <tbody id="blogTbody"></tbody></table>
+    </div>
+  </div>
+
+</main>
+
+<!-- PHOTO MODAL -->
+<div class="modal-overlay" id="photoModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>🖼️ Update Property Photos</h3>
+      <button class="modal-close" onclick="closePhotoModal()">✕</button>
+    </div>
+    <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:16px;">Enter image URLs — one per line. The first URL will be the cover photo shown on listings.</p>
+    <input type="hidden" id="modalPropId" />
+    <textarea id="modalImgUrls" class="form-control" rows="5" placeholder="https://images.unsplash.com/photo-xxx&#10;https://images.unsplash.com/photo-yyy" style="width:100%;"></textarea>
+    <div class="form-hint" style="margin-top:4px;">💡 Paste direct image URLs (Unsplash, Google Drive public, etc.)</div>
+    <div class="modal-img-preview" id="modalImgPreview"></div>
+    <div style="display:flex;gap:10px;margin-top:20px;">
+      <button class="btn btn-gold" style="flex:1;" onclick="savePhotos()">💾 Save Photos</button>
+      <button class="btn btn-outline" onclick="previewModalImgs()">🔍 Preview</button>
+      <button class="btn btn-navy" onclick="closePhotoModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+  initData();
+
+  // ── Navigation ──
+  const PANELS = ['dashboard','addProp','manageProps','addBlog','manageBlogs'];
+  function go(id) {
+    PANELS.forEach(p => {
+      document.getElementById('panel-' + p)?.classList.remove('active');
+      document.getElementById('nav-' + p)?.classList.remove('active');
+    });
+    const panel = document.getElementById('panel-' + id);
+    const nav = document.getElementById('nav-' + id);
+    if (panel) panel.classList.add('active');
+    if (nav) nav.classList.add('active');
+    if (id === 'dashboard') renderDashboard();
+    if (id === 'manageProps') renderManage();
+    if (id === 'manageBlogs') renderBlogTable();
+    window.scrollTo(0, 0);
+  }
+
+  // ── Toast ──
+  function toast(msg, danger) {
+    const t = document.getElementById('toast');
+    t.style.borderLeftColor = danger ? '#e74c3c' : 'var(--gold)';
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // ── Dashboard ──
+  function renderDashboard() {
+    const props = getProperties();
+    const blogs = getBlogs();
+    const forSale = props.filter(p => p.status === 'For Sale').length;
+    const forRent = props.filter(p => p.status === 'For Rent').length;
+    document.getElementById('dashStats').innerHTML = `
+      <div class="stat-card gold"><div class="stat-icon">🏢</div><div><div class="stat-num">${props.length}</div><div class="stat-lbl">Total Properties</div></div></div>
+      <div class="stat-card green"><div class="stat-icon">🏷️</div><div><div class="stat-num">${forSale}</div><div class="stat-lbl">For Sale</div></div></div>
+      <div class="stat-card blue"><div class="stat-icon">🔑</div><div><div class="stat-num">${forRent}</div><div class="stat-lbl">For Rent</div></div></div>
+      <div class="stat-card purple"><div class="stat-icon">📰</div><div><div class="stat-num">${blogs.length}</div><div class="stat-lbl">Blog Posts</div></div></div>`;
+    document.getElementById('recentTbody').innerHTML = props.slice(0,5).map(p => `
+      <tr>
+        <td><img class="tbl-img" src="${p.images?.[0] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80'}" /></td>
+        <td><div class="tbl-title">${p.title}</div></td>
+        <td style="color:var(--text-muted);font-size:0.82rem;">${p.location}</td>
+        <td style="color:var(--gold);font-weight:700;">${p.priceLabel || formatPrice(p.price)}</td>
+        <td><span class="dot ${p.status==='For Sale'?'dot-green':'dot-blue'}"></span>${p.status}</td>
+        <td><a href="property.html?id=${p.id}" target="_blank" class="btn btn-edit btn-sm">View</a></td>
+      </tr>`).join('');
+  }
+
+  // ── Manage Properties ──
+  function renderManage() {
+    const q = (document.getElementById('searchProps')?.value || '').toLowerCase();
+    let props = getProperties();
+    if (q) props = props.filter(p => p.title.toLowerCase().includes(q) || p.location.toLowerCase().includes(q));
+    document.getElementById('manageTbody').innerHTML = props.length ? props.map(p => `
+      <tr>
+        <td><img class="tbl-img" src="${p.images?.[0] || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80'}" /></td>
+        <td><div class="tbl-title">${p.title}</div></td>
+        <td style="color:var(--text-muted);font-size:0.82rem;max-width:160px;">${p.location}</td>
+        <td style="color:var(--gold);font-weight:700;">${p.priceLabel || formatPrice(p.price)}</td>
+        <td><span class="badge badge-gold" style="font-size:0.68rem;">${p.type}</span></td>
+        <td><span class="dot ${p.status==='For Sale'?'dot-green':'dot-blue'}"></span>${p.status}</td>
+        <td style="text-align:center;">${p.featured ? '⭐' : '<span style="color:var(--text-muted);">—</span>'}</td>
+        <td class="actions-cell">
+          <button class="btn btn-edit btn-sm" onclick="openPhotoModal('${p.id}')">🖼️ Photos</button>
+          <button class="btn btn-edit btn-sm" onclick="toggleFeat('${p.id}',${!p.featured})">${p.featured?'Unfeature':'Feature'}</button>
+          <a class="btn btn-edit btn-sm" href="property.html?id=${p.id}" target="_blank">View</a>
+          <button class="btn btn-danger btn-sm" onclick="delProp('${p.id}')">Delete</button>
+        </td>
+      </tr>`).join('') :
+      `<tr><td colspan="8"><div class="empty-state"><div class="icon">🏚️</div><h4>No properties found</h4></div></td></tr>`;
+  }
+
+  // ── Manage Blogs ──
+  function renderBlogTable() {
+    const blogs = getBlogs();
+    document.getElementById('blogTbody').innerHTML = blogs.length ? blogs.map(b => `
+      <tr>
+        <td><img class="tbl-img" src="${b.image}" /></td>
+        <td><div class="tbl-title">${b.title}</div></td>
+        <td><span class="badge badge-gold" style="font-size:0.68rem;">${b.category}</span></td>
+        <td style="font-size:0.84rem;">${b.author}</td>
+        <td style="font-size:0.8rem;color:var(--text-muted);">${formatDate(b.date)}</td>
+        <td class="actions-cell">
+          <a class="btn btn-edit btn-sm" href="blog-post.html?id=${b.id}" target="_blank">View</a>
+          <button class="btn btn-danger btn-sm" onclick="delBlog('${b.id}')">Delete</button>
+        </td>
+      </tr>`).join('') :
+      `<tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><h4>No blog posts yet</h4></div></td></tr>`;
+  }
+
+  // ── Add Property ──
+  document.getElementById('addPropForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const imageUrls = document.getElementById('pImages').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    const amenities = document.getElementById('pAmenities').value.split(',').map(s=>s.trim()).filter(Boolean);
+    const price = parseInt(document.getElementById('pPrice').value);
+    addProperty({
+      title: document.getElementById('pTitle').value,
+      location: document.getElementById('pLocation').value,
+      type: document.getElementById('pType').value,
+      status: document.getElementById('pStatus').value,
+      price,
+      priceLabel: document.getElementById('pPriceLabel').value || formatPrice(price),
+      bedrooms: parseInt(document.getElementById('pBeds').value) || 0,
+      bathrooms: parseInt(document.getElementById('pBaths').value) || 0,
+      area: parseInt(document.getElementById('pArea').value),
+      floor: document.getElementById('pFloor').value,
+      facing: document.getElementById('pFacing').value,
+      age: document.getElementById('pAge').value,
+      description: document.getElementById('pDesc').value,
+      amenities,
+      images: imageUrls.length ? imageUrls : ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80'],
+      featured: document.getElementById('pFeatured').value === 'true'
+    });
+    toast('✅ Property published successfully!');
+    e.target.reset();
+    document.getElementById('imgPreviews').innerHTML = '';
+  });
+
+  // ── Add Blog ──
+  document.getElementById('addBlogForm').addEventListener('submit', e => {
+    e.preventDefault();
+    addBlog({
+      title: document.getElementById('bTitle').value,
+      category: document.getElementById('bCategory').value,
+      author: document.getElementById('bAuthor').value,
+      readTime: document.getElementById('bReadTime').value || '5 min read',
+      image: document.getElementById('bImage').value,
+      excerpt: document.getElementById('bExcerpt').value,
+      content: document.getElementById('bContent').value
+    });
+    toast('✅ Blog post published!');
+    e.target.reset();
+  });
+
+  // ── Helpers ──
+  function previewImgs() {
+    const urls = document.getElementById('pImages').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    document.getElementById('imgPreviews').innerHTML = urls.map((u,i) =>
+      `<div class="img-preview-item"><img src="${u}" onerror="this.src='https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=80'" />${i===0?'<span class="img-preview-cover">COVER</span>':''}</div>`).join('');
+  }
+
+  function toggleFeat(id, val) {
+    updateProperty(id, { featured: val });
+    toast(val ? '⭐ Property featured on homepage!' : 'Property unfeatured.');
+    renderManage();
+  }
+
+  function delProp(id) {
+    if (confirm('Delete this property permanently?')) {
+      deleteProperty(id);
+      toast('🗑️ Property deleted.', true);
+      renderManage();
+      renderDashboard();
+    }
+  }
+
+  function delBlog(id) {
+    if (confirm('Delete this blog post?')) {
+      deleteBlog(id);
+      toast('🗑️ Post deleted.', true);
+      renderBlogTable();
+    }
+  }
+
+  // Init
+  renderDashboard();
+</script>
+</body>
+</html>

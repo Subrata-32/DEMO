@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Sqft an Yards | South Delhi Real Estate Insights</title>
+  <meta name="description" content="Real estate insights, market trends, buying guides and investment tips from South Delhi's leading property consultants — Sqft an Yards." />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .blog-hero-inner { padding-bottom: 80px; }
+    .cat-filter { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:40px; }
+    .cat-btn { padding:8px 22px; border-radius:50px; border:1.5px solid var(--gray-200); background:var(--white); font-family:var(--font-body); font-size:0.85rem; font-weight:600; cursor:pointer; transition:var(--transition); color:var(--text-mid); }
+    .cat-btn:hover, .cat-btn.active { background:var(--gold); color:var(--navy); border-color:var(--gold); }
+    .blog-grid-large { display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+    .blog-card-large { display:grid; grid-template-columns:1fr 1fr; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-md); transition:var(--transition); background:var(--white); cursor:pointer; }
+    .blog-card-large:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+    .blog-card-large .blog-card-img { height:100%; min-height:220px; }
+    .newsletter { background:linear-gradient(135deg,var(--navy),var(--navy-mid)); border-radius:var(--radius-xl); padding:50px; text-align:center; margin-top:60px; }
+    .newsletter h3 { color:var(--white); margin-bottom:10px; }
+    .newsletter p { color:rgba(255,255,255,0.65); max-width:400px; margin:0 auto 24px; font-size:0.9rem; }
+    .newsletter-form { display:flex; gap:10px; max-width:420px; margin:0 auto; flex-wrap:wrap; justify-content:center; }
+    .newsletter-input { flex:1; min-width:220px; padding:12px 18px; border:none; border-radius:50px; font-family:var(--font-body); font-size:0.9rem; outline:none; }
+    @media(max-width:768px){ .blog-grid-large { grid-template-columns:1fr; } .blog-card-large { grid-template-columns:1fr; } .blog-card-large .blog-card-img { min-height:200px; } }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar light-nav" id="mainNav">
+  <div class="navbar-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🏛️</div>
+      <div class="nav-logo-text">
+        <div class="brand">Sqft an Yards</div>
+        <div class="tagline">The Property People</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="properties.html">Properties</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="index.html#about">About Us</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="tel:+917065977751" class="btn btn-outline-gold" style="padding:10px 20px;font-size:0.85rem;">📞 +91-70-659-77751</a>
+      <a href="admin.html" class="btn btn-gold" style="padding:10px 20px;font-size:0.85rem;">Admin Panel</a>
+    </div>
+    <div class="hamburger" id="ham"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<nav class="nav-mobile" id="mobNav">
+  <a href="index.html">🏠 Home</a>
+  <a href="properties.html">🏢 Properties</a>
+  <a href="blog.html">📰 Blog</a>
+  <a href="index.html#contact">📞 Contact</a>
+  <a href="admin.html" style="color:var(--gold);">⚙️ Admin</a>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero blog-hero-inner">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span style="color:rgba(255,255,255,0.7)">Blog</span></div>
+    <h1>Real Estate Insights</h1>
+    <p>Expert guides, market trends, and property tips from South Delhi's leading consultants</p>
+  </div>
+</div>
+
+<section class="section-sm">
+  <div class="container">
+    <!-- CATEGORY FILTER -->
+    <div class="cat-filter" id="catFilter">
+      <button class="cat-btn active" data-cat="">All Articles</button>
+      <button class="cat-btn" data-cat="Market Trends">Market Trends</button>
+      <button class="cat-btn" data-cat="Buying Guide">Buying Guide</button>
+      <button class="cat-btn" data-cat="NRI Corner">NRI Corner</button>
+      <button class="cat-btn" data-cat="Home &amp; Design">Home &amp; Design</button>
+      <button class="cat-btn" data-cat="Legal Tips">Legal Tips</button>
+      <button class="cat-btn" data-cat="Investment">Investment</button>
+    </div>
+
+    <!-- BLOG GRID -->
+    <div class="blog-grid" id="blogGrid"><!-- rendered by JS --></div>
+    <div id="noBlogsMsg" style="display:none;text-align:center;padding:60px;color:var(--gray-400);">
+      <h3>No articles in this category yet</h3>
+      <p>Check back soon or <a href="admin.html" style="color:var(--gold);">add a new post</a>.</p>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="newsletter reveal">
+      <h3>Stay Ahead of the Market</h3>
+      <p>Get South Delhi real estate updates, new listings, and expert tips delivered to your inbox.</p>
+      <form class="newsletter-form" onsubmit="subNewsletter(event)">
+        <input class="newsletter-input" type="email" placeholder="Enter your email address" required />
+        <button type="submit" class="btn btn-gold" style="border-radius:50px;">Subscribe →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:24px 0;">
+      <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--white);">Sqft an Yards</div>
+      <div style="display:flex;gap:20px;">
+        <a href="index.html" style="color:rgba(255,255,255,0.65);font-size:0.88rem;">Home</a>
+        <a href="properties.html" style="color:rgba(255,255,255,0.65);font-size:0.88rem;">Properties</a>
+        <a href="blog.html" style="color:rgba(255,255,255,0.65);font-size:0.88rem;">Blog</a>
+      </div>
+      <a href="tel:+917065977751" style="color:var(--gold);font-weight:700;">+91-70-659-77751</a>
+    </div>
+    <div class="footer-bottom"><span>© 2025 Sqft an Yards. All rights reserved.</span></div>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+  initData();
+  initNav();
+  initReveal();
+
+  let activeCat = '';
+
+  function renderBlogs() {
+    const blogs = getBlogs();
+    const filtered = activeCat ? blogs.filter(b => b.category === activeCat) : blogs;
+    const grid = document.getElementById('blogGrid');
+    const noMsg = document.getElementById('noBlogsMsg');
+    if (!filtered.length) { grid.innerHTML = ''; noMsg.style.display = 'block'; return; }
+    noMsg.style.display = 'none';
+    grid.innerHTML = filtered.map((b,i) => `
+      <div class="blog-card reveal" onclick="window.location='blog-post.html?id=${b.id}'" style="cursor:pointer;">
+        <div class="blog-card-img"><img src="${b.image}" alt="${b.title}" loading="lazy" /></div>
+        <div class="blog-card-body">
+          <div class="blog-card-cat">${b.category}</div>
+          <div class="blog-card-title">${b.title}</div>
+          <div class="blog-card-excerpt">${b.excerpt || ''}</div>
+          <div class="blog-card-footer">
+            <span>✍️ ${b.author}</span>
+            <span style="display:flex;align-items:center;gap:6px;">🕐 ${b.readTime || '5 min read'}</span>
+          </div>
+          <div style="margin-top:12px;font-size:0.8rem;color:var(--gray-400);">📅 ${formatDate(b.date)}</div>
+        </div>
+      </div>`).join('');
+    initReveal();
+  }
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      renderBlogs();
+    });
+  });
+
+  function subNewsletter(e) {
+    e.preventDefault();
+    showToast('🎉 Subscribed! You\'ll receive market updates soon.');
+    e.target.reset();
+  }
+
+  renderBlogs();
+</script>
+</body>
+</html>
